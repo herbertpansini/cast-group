@@ -7,3 +7,5 @@ o bando de dados escolhido foi o MySQL utilizando FlyWay Migration para melhor c
 do banco de dados os scripts de criação e inclusão encontram-se dentro da aplicação em
 cast-group/avaliacao/src/main/resources/db.
 Frontend optei pelo primeng.
+
+http://localhost:8080/swagger-ui.html
