@@ -1,0 +1,65 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="Adicionar nova categoria" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="categorias" [rows]="10" [paginator]="true"
+        [rowHover]="true" dataKey="codigo" [totalRecords]="totalRecords"
+        [loading]="loading" [lazy]="true" (onLazyLoad)="loadCategoriesByPage($event)"
+        currentPageReportTemplate="Exibindo {first} à {last} de {totalRecords} registro(s)" [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">Categorias</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" [(ngModel)]="searchCategoria" placeholder="Entre com a descrição..." />
+                </span>
+                <button pButton type="button" icon="ui-icon-search" label="Pesquisar" (click)="loadCategoriesByPage(dt)"></button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Código </th>
+                <th>Descrição </th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-categoria>
+            <tr>
+                <td>{{categoria.codigo}}</td>
+                <td>{{categoria.descricao}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editCategoria(categoria)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteCategoria(categoria)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                No total, existem {{categorias ? categorias.length : 0 }} categorias.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="categoriaDialog" [style]="{width: '450px'}" header="Categoria Detalhes" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="descricao">Descrição</label>
+            <input type="text" pInputText id="descricao" [(ngModel)]="categoria.descricao" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !categoria.descricao">Descrição é obrigatório.</small>
+            <small class="p-invalid" *ngIf="submitted && categoria.descricao.length > 50">Descrição tamanho máximo é de 50 caracteres.</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text" (click)="saveCategoria()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

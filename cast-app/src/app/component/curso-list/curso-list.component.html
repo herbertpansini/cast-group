@@ -1,0 +1,95 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="Adicionar novo curso" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="cursos" [rows]="10" [paginator]="true"
+        [rowHover]="true" dataKey="codigo" [totalRecords]="totalRecords"
+        [loading]="loading" [lazy]="true" (onLazyLoad)="loadCursosByPage($event)"
+        currentPageReportTemplate="Exibindo {first} à {last} de {totalRecords} registro(s)" [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">Cursos</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" [(ngModel)]="searchCurso" placeholder="Entre com o assunto..." />
+                </span>
+                <button pButton type="button" icon="ui-icon-search" label="Pesquisar" (click)="loadCursosByPage(dt)"></button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Código </th>
+                <th>Assunto </th>
+                <th>Data de início </th>
+                <th>Data de término </th>
+                <th>Quantidade de Alunos por Turma </th>
+                <th>Categoria </th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-curso>
+            <tr>
+                <td>{{curso.codigo}}</td>
+                <td>{{curso.assunto}}</td>
+                <td>{{curso.dataInicio | date: 'dd/MM/yyyy'}}</td>
+                <td>{{curso.dataTermino | date: 'dd/MM/yyyy'}}</td>
+                <td>{{curso.quantidadeAlunosPorTurma}}</td>
+                <td>{{curso.categoria.descricao}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editCurso(curso)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteCurso(curso)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                No total, existem {{cursos ? cursos.length : 0 }} cursos.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="cursoDialog" [style]="{width: '550px'}" [contentStyle]="{minHeight: '480px'}" header="Curso Detalhes" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="assunto">Assunto</label>
+            <input type="text" pInputText id="assunto" [(ngModel)]="curso.assunto" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !curso.assunto">Assunto é obrigatório.</small>
+            <small class="p-invalid" *ngIf="submitted && curso.assunto.length > 50">Assunto tamanho máximo é de 50 caracteres.</small>
+        </div>
+        <div class="p-field">
+          <label for="dataInicio">Data início</label>
+          <p-calendar id="dataInicio" [(ngModel)]="curso.dataInicio" readonlyInput="true" dateFormat="dd/mm/yy" [yearNavigator]="true" [inline]="false" yearRange="1900:2100" [showIcon]="true" tooltipPosition="top">
+          </p-calendar>
+          <small class="p-invalid" *ngIf="submitted && !curso.dataInicio">Data início é obrigatório.</small>
+        </div>
+        <div class="p-field">
+          <label for="dataTermino">Data término</label>
+          <p-calendar id="dataTermino" [(ngModel)]="curso.dataTermino" readonlyInput="true" dateFormat="dd/mm/yy" [yearNavigator]="true" [inline]="false" yearRange="1900:2100" [showIcon]="true" required tooltipPosition="top">
+          </p-calendar>
+          <small class="p-invalid" *ngIf="submitted && !curso.dataTermino">Data término é obrigatório.</small>
+        </div>
+        <div class="p-field">
+          <label for="quantidadeAlunosTurma">Quantidade de alunos por turma</label>
+          <input type="text" pInputText id="quantidadeAlunosTurma" [(ngModel)]="curso.quantidadeAlunosPorTurma" />
+        </div>
+        <div class="p-field" [ngClass]="{'filled': curso.categoria.codigo}">
+            <label for="categoria">Categoria</label>
+            <p-dropdown emptyFilterMessage="Nenhum registro encontrado" [options]="categorias" optionLabel="descricao" optionValue="codigo" [(ngModel)]="curso.categoria.codigo" placeholder="Selecione uma categoria" [filter]="true" required>
+            </p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !curso.categoria.codigo">Categoria é obrigatório.</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text" (click)="saveCurso()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
