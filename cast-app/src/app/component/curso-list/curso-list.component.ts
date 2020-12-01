@@ -5,7 +5,6 @@ import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { CategoriaService } from 'src/app/service/categoria.service';
 import { Categoria } from 'src/app/model/categoria';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-curso-list',
@@ -76,7 +75,7 @@ export class CursoListComponent implements OnInit {
 
     deleteCurso(curso: Curso) {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + curso.assunto + '?',
+            message: 'Você deseja excluir curso: ' + curso.assunto + '?',
             header: 'Confirm',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {

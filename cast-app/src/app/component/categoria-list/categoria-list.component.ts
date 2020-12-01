@@ -53,7 +53,7 @@ export class CategoriaListComponent {
 
     deleteCategoria(categoria: Categoria) {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + categoria.descricao + '?',
+            message: 'Você deseja excluir categoria: ' + categoria.descricao + '?',
             header: 'Confirm',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
